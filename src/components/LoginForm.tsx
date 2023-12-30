@@ -1,16 +1,32 @@
 "use client";
 
 import React from "react";
-// import Button from "./button";
+import Button from "./button";
 import { useEffect, useState } from "react";
 
 const LoginForm = () => {
-  const handleClick = async () => {};
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [onSubmit, setOnSubmit] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+
+    return;
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault(); // prevents default form behaviour
+    console.log(formData);
+    return;
+  };
   return (
     <>
-      <form>
-        <div className="min-h-screen max-w-screen flex flex-col items-center justify-center">
-          <div className="flex flex-col rounded-lg max-w-sm w-3/5 bg-gray-50 mx-auto px-4 pb-3 pt-3">
+      <form onSubmit={handleSubmit}>
+        <div className="max-w-lg w-screen flex flex-col items-center justify-center">
+          <div className="flex flex-col rounded-lg max-w-md w-3/5 bg-gray-50 mx-auto px-4 pb-3 pt-3">
             <h1 className="text-2xl mx-auto pb-4 pt-2">
               Login to <span className="font-bold">Carousel</span>
             </h1>
@@ -19,6 +35,8 @@ const LoginForm = () => {
               type="email"
               name="email"
               placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
               required
             ></input>
             <input
@@ -26,9 +44,11 @@ const LoginForm = () => {
               type="password"
               name="password"
               placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
               required
             ></input>
-            {/* <Button onClick={handleClick} text="Login" /> */}
+            <Button text="Login" type="submit" />
             {/* <Link
               key="forgot-password"
               href="../marketplace"
