@@ -11,7 +11,7 @@ export type posts = {
   p_query: string,
   // p_time_posted: ?? DATE??
   p_upvotes: number,
-  category: "" | undefined
+  category: "physics" | "mathematics" | "history" | undefined
 }
 
 export type comments = {
