@@ -1,14 +1,14 @@
 import React from "react";
 import Card from "../components/Card";
-import { posts } from "../definitions";
+import { postData } from "../definitions";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Marketplace = () => {
-  const [postData, setPostData] = useState<posts[]>([]);
+  const [postData, setPostData] = useState<postData[]>([]);
   const getPostData = async () => {
     const response = await axios.get(
-      `http://localhost:3000/api/getPostDataByNew/20`
+      `http://localhost:3000/api/getPostDataByNew`
     );
     setPostData(response.data);
   };
@@ -23,13 +23,13 @@ const Marketplace = () => {
             return (
               <Card
                 key={post.post_id}
-                user_id={post.user_id}
+                username={post.username}
                 post_id={post.post_id}
                 p_title={post.p_title}
                 p_query={post.p_query}
                 p_time_posted={post.p_time_posted}
                 p_upvotes={post.p_upvotes}
-                category={post.category}
+                category_name={post.category_name}
               />
             );
           })}

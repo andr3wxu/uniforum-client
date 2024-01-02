@@ -5,14 +5,14 @@ export type user = {
   password_hash: string
 };
 
-export type posts = {
-  user_id: number,
+export type postData = {
+  username: string,
   post_id: number,
   p_title: string,
   p_query: string | undefined,
   p_time_posted: string,
   p_upvotes: number,
-  category: "physics" | "mathematics" | "history" | undefined
+  category_name: string
 }
 
 export type comments = {
