@@ -1,22 +1,34 @@
 import React from "react";
 import Card from "../components/Card";
+import Navbar from "../components/Navbar";
 import { postData } from "../definitions";
 import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
-const Marketplace = () => {
+const Forum = () => {
   const [postData, setPostData] = useState<postData[]>([]);
+
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
   const getPostData = async () => {
-    const response = await axios.get(
-      `http://localhost:3000/api/getPostDataByNew`
-    );
-    setPostData(response.data);
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/getPostDataByNew`
+      );
+      setPostData(response.data);
+    } catch (error) {
+      navigate("/login");
+    }
   };
   useEffect(() => {
     getPostData();
   }, []);
   return (
     <>
+      <Navbar />
       <div className="flex items-start justify-center">
         <div className="w-1/2 grid grid-cols-1">
           {postData.map((post, i) => {
@@ -39,4 +51,4 @@ const Marketplace = () => {
   );
 };
 
-export default Marketplace;
+export default Forum;

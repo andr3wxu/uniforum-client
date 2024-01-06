@@ -1,10 +1,11 @@
 import React from "react";
+import Navbar from "./Navbar";
 import { postData } from "../definitions";
 import { ArrowUpIcon } from "@heroicons/react/20/solid";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Post = () => {
   const postId = useParams();
@@ -14,6 +15,8 @@ const Post = () => {
   const [isPostUpvote, setIsPostUpvote] = useState(false);
   const [postUpvote, setPostUpvote] = useState(0);
   const [commentData, setCommentData] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getPostData = async () => {
@@ -38,9 +41,10 @@ const Post = () => {
     getCommentData();
   }, [postId]);
 
-  if (!post) {
-    return <Link to="/forum">Go back to Forum</Link>;
-  }
+  // if (!post) {
+  //   return <div>Back</div>;
+  //   // navigate("/forbidden");
+  // }
 
   const handleUpvote = () => {
     setIsPostUpvote(!isPostUpvote);
@@ -55,14 +59,15 @@ const Post = () => {
     getUpvote();
   };
 
-  return postDataFetched && commentDataFetched ? (
+  return postDataFetched && commentDataFetched && post ? (
     <>
       <div className="w-full flex flex-col justify-center items-center">
+        <Navbar />
         <Link
           to="/forum"
           className="right-0 text-blue-500 active:text-blue-300 hover:text-blue-500"
         >
-          Back to Forum
+          Back
         </Link>
         <div id="postbox" className="flex flex-row w-1/2">
           <div className="flex flex-col items-center w-8 pt-5">
@@ -130,7 +135,9 @@ const Post = () => {
       </div>
     </>
   ) : (
-    <>hi</>
+    <>
+      <Link to="/forum">Post not found. Back to forum</Link>
+    </>
   );
 };
 

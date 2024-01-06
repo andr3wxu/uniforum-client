@@ -1,22 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Marketplace from './pages/Forum';
+import Register from './pages/Register';
+import Forum from './pages/Forum';
 import Post from './components/Post';
+import Create from './pages/Create';
+import Profile from './pages/Profile';
+import Forbidden from './pages/Forbidden';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
       <BrowserRouter basename="/">
         <Routes>
           <Route index element={<Home/>}/>
           <Route path="login" element={<Login/>}/>
-          <Route path="forum" element={<Marketplace/>}/>
+          <Route path="register" element={<Register />} />
+          <Route path="forum" element={<Forum/>}/>
           <Route path="forum/:postId" element={<Post/>}/>
+          <Route path="create" element={<Create />}/>
+          <Route path="profile" element={<Profile />}/>
+          <Route path="forbidden" element={<Forbidden />} />
         </Routes>
       </BrowserRouter>
     </>

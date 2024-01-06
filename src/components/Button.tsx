@@ -11,7 +11,7 @@ const Button = ({ text, type }: Props) => {
     <>
       <button
         type={type}
-        className="m-auto p-0 mt-3 w-16 h-8 rounded-md bg-blue-500 text-white"
+        className="p-0 mt-3 w-16 h-8 rounded-md bg-blue-500 text-white"
       >
         {text}
       </button>
