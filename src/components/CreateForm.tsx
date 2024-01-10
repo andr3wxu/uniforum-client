@@ -24,6 +24,7 @@ const CreateForm = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user_id");
+  const username = localStorage.getItem("username");
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   const handleChange = (e) => {
@@ -95,7 +96,6 @@ const CreateForm = () => {
                   })}
                 </select>
               </div>
-              {/* {error && <p className="text-red-500 text-sm pt-2">{error}</p>} */}
               <div className="w-full flex justify-end pr-1 text-sm">
                 <Button text="Create" type="submit" />
               </div>

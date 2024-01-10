@@ -49,7 +49,7 @@ const LoginForm = () => {
         <div className="max-w-lg w-screen">
           <div className="flex flex-col rounded-lg max-w-md w-3/5 bg-gray-50 mx-auto px-4 pb-3 pt-3 border-2">
             <h1 className="text-2xl mx-auto pb-4 pt-2 font-semibold text-gray-600">
-              Login
+              Login to <span className="font-bold text-blue-500">Uniforum</span>
             </h1>
             <input
               className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-3 text-sm outline-2 placeholder:text-gray-500 mb-2"
@@ -70,7 +70,9 @@ const LoginForm = () => {
               required
             ></input>
             {error && <p className="text-red-500 text-sm pt-2">{error}</p>}
-            <Button text="Login" type="submit" />
+            <div className="mt-3">
+              <Button text="Login" type="submit" />
+            </div>
             {/* <Link
               key="forgot-password"
               href="../marketplace"

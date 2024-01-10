@@ -6,6 +6,7 @@ import axios from "axios";
 import { useState, useEffect, createContext } from "react";
 import { useParams } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
+import Comment from "./Comment";
 
 export const UpdatePost = createContext(null);
 
@@ -21,6 +22,7 @@ const Post = () => {
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const user_id = localStorage.getItem("user_id");
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   useEffect(() => {
@@ -32,6 +34,17 @@ const Post = () => {
       setPostUpvote(response.data.p_upvotes);
     };
     getPostData();
+    const isUpvote = async () => {
+      const response = await axios.put("http://localhost:3000/api/isUpvote", {
+        user_id: user_id,
+        post_id: postId.postId,
+      });
+      const user = response.data;
+      if (user[0]) {
+        setIsPostUpvote(true);
+      }
+    };
+    isUpvote();
     setPostDataFetched(true);
   }, [postId]);
 
@@ -46,13 +59,14 @@ const Post = () => {
     getCommentData();
   }, [postId, postUpdate]);
 
-  const handleUpvote = () => {
+  const handlePostUpvote = () => {
     setIsPostUpvote(!isPostUpvote);
     const getUpvote = async () => {
       const response = await axios.put(
         `http://localhost:3000/api/${post.post_id}/${
           isPostUpvote ? "downvote" : "upvote"
-        }`
+        }`,
+        { user_id: user_id }
       );
       setPostUpvote(response.data[0].p_upvotes);
     };
@@ -70,7 +84,7 @@ const Post = () => {
           <Navbar />
           <Link
             to="/forum"
-            className="right-0 text-blue-500 active:text-blue-300 hover:text-blue-500"
+            className="select-none right-0 text-blue-500 active:text-blue-300 hover:text-blue-500"
           >
             Back
           </Link>
@@ -82,7 +96,7 @@ const Post = () => {
                     ? "bg-blue-200 text-blue-500"
                     : "text-black bg-gray-200"
                 } w-full p-1 transition transition-duration-150 hover:text-blue-900 hover:bg-blue-200 hover:cursor-pointer rounded-lg`}
-                onClick={handleUpvote}
+                onClick={handlePostUpvote}
               />
               <span className="mt-1 select-none">{postUpvote}</span>
             </div>
@@ -107,38 +121,15 @@ const Post = () => {
                 <div>
                   {commentData.map((comment) => {
                     return (
-                      <div key={comment.comment_id}>
-                        <hr className="border-t-2 border-gray-200 my-4" />
-                        <div className="flex flex-row">
-                          <div className="flex flex-col items-center pt-1">
-                            <div className="w-8 h-8">
-                              <ArrowUpIcon
-                                className={`${
-                                  isPostUpvote
-                                    ? "text-blue-500 bg-blue-200"
-                                    : "text-black bg-gray-200"
-                                } flex-1 p-1 transition transition-duration-150 hover:text-blue-900 hover:bg-blue-200 hover:cursor-pointer rounded-lg`}
-                                onClick={handleUpvote}
-                              />
-                            </div>
-                            <span className="mt-1 select-none">
-                              {postUpvote}
-                            </span>
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm text-gray-500">
-                              Reply by{" "}
-                              <span className="font-semibold text-gray-600">
-                                {comment.username}
-                              </span>
-                            </div>
-                            <div className="pt-1 pb-1">{comment.c_query}</div>
-                            <div className="text-sm text-gray-400">
-                              {new Date(comment.c_time_posted).toUTCString()}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <Comment
+                        key={comment.comment_id}
+                        user_id={user_id}
+                        username={comment.username}
+                        comment_id={comment.comment_id}
+                        c_query={comment.c_query}
+                        c_time_posted={comment.c_time_posted}
+                        c_upvotes={comment.c_upvotes}
+                      />
                     );
                   })}
                 </div>
@@ -150,7 +141,17 @@ const Post = () => {
     </>
   ) : (
     <>
-      <Link to="/forum">Post not found. Back to forum</Link>
+      <div className="w-full h-full flex flex-col items-center">
+        <h1 className="text-gray-500 text-xl font-semibold">
+          404: Page not Found
+        </h1>
+        <Link
+          className="font-semibold text-blue-500 hover:text-blue-600 mb-20"
+          to="/forum"
+        >
+          Back to forum
+        </Link>
+      </div>
     </>
   );
 };

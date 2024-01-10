@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { postData } from "../definitions";
 import { ArrowUpIcon } from "@heroicons/react/20/solid";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Card = ({
   username,
@@ -14,16 +14,33 @@ const Card = ({
   p_upvotes,
   category_name,
 }: postData) => {
-  // const response = await axios.get('http:')
   const [isUpvote, setIsUpvote] = useState(false);
   const [upvote, setUpvote] = useState(p_upvotes);
+
+  const user_id = localStorage.getItem("user_id");
+
+  useEffect(() => {
+    const isUpvote = async () => {
+      const response = await axios.put("http://localhost:3000/api/isUpvote", {
+        user_id: user_id,
+        post_id: post_id,
+      });
+      const user = response.data;
+      if (user[0]) {
+        setIsUpvote(true);
+      }
+    };
+    isUpvote();
+  }, []);
+
   const handleUpvote = () => {
     setIsUpvote(!isUpvote);
     const getUpvote = async () => {
       const response = await axios.put(
         `http://localhost:3000/api/${post_id}/${
           isUpvote ? "downvote" : "upvote"
-        }`
+        }`,
+        { user_id: user_id }
       );
       setUpvote(response.data[0].p_upvotes);
     };
