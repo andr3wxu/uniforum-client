@@ -1,44 +1,47 @@
 import React from "react";
 import Card from "../components/Card";
-import { posts } from "../definitions";
+import Navbar from "../components/Navbar";
+import { postData } from "../definitions";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
-const productArray: posts[] = [
-  {
-    user_id: 1,
-    post_id: 1,
-    p_query: "What is the radius of the Earth?",
-    p_upvotes: 2,
-    category: "physics",
-  },
-  {
-    user_id: 1,
-    post_id: 2,
-    p_query: "How much does the sun weigh?",
-    p_upvotes: 0,
-    category: "physics",
-  },
-  {
-    user_id: 2,
-    post_id: 3,
-    p_query: "What is 1+1?",
-    p_upvotes: 0,
-    category: undefined,
-  },
-];
+const Forum = () => {
+  const [postData, setPostData] = useState<postData[]>([]);
 
-const Marketplace = () => {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+  const getPostData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/getPostDataByNew`
+      );
+      setPostData(response.data);
+    } catch (error) {
+      navigate("/login");
+    }
+  };
+  useEffect(() => {
+    getPostData();
+  }, []);
   return (
     <>
+      <Navbar />
       <div className="flex items-start justify-center">
         <div className="w-1/2 grid grid-cols-1">
-          {productArray.map((post, i) => {
+          {postData.map((post, i) => {
             return (
               <Card
-                user_id={post.user_id}
+                key={post.post_id}
+                username={post.username}
                 post_id={post.post_id}
+                p_title={post.p_title}
                 p_query={post.p_query}
+                p_time_posted={post.p_time_posted}
                 p_upvotes={post.p_upvotes}
-                category={post.category}
+                category_name={post.category_name}
               />
             );
           })}
@@ -48,4 +51,4 @@ const Marketplace = () => {
   );
 };
 
-export default Marketplace;
+export default Forum;

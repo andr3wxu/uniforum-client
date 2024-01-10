@@ -1,20 +1,109 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { posts } from "../definitions";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { postData } from "../definitions";
+import { ArrowUpIcon } from "@heroicons/react/20/solid";
+import axios from "axios";
+import { useState, useEffect } from "react";
 
-const Card = ({ post_id, p_query, p_upvotes, category }: posts) => {
+const Card = ({
+  username,
+  post_id,
+  p_title,
+  p_query,
+  p_time_posted,
+  p_upvotes,
+  category_name,
+}: postData) => {
+  const [isUpvote, setIsUpvote] = useState(false);
+  const [upvote, setUpvote] = useState(p_upvotes);
+
+  const user_id = localStorage.getItem("user_id");
+  const location = useLocation();
+  const { hash, pathname, search } = location;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isUpvote = async () => {
+      try {
+        const response = await axios.put("http://localhost:3000/api/isUpvote", {
+          user_id: user_id,
+          post_id: post_id,
+        });
+        const user = response.data;
+        if (user[0]) {
+          setIsUpvote(true);
+        }
+      } catch (error) {
+        navigate("/login");
+      }
+    };
+    isUpvote();
+  }, []);
+
+  const handleUpvote = () => {
+    setIsUpvote(!isUpvote);
+    const getUpvote = async () => {
+      try {
+        const response = await axios.put(
+          `http://localhost:3000/api/${post_id}/${
+            isUpvote ? "downvote" : "upvote"
+          }`,
+          { user_id: user_id }
+        );
+        setUpvote(response.data[0].p_upvotes);
+      } catch (error) {
+        navigate("/login");
+      }
+    };
+    getUpvote();
+  };
+
   return (
     <>
-      <Link
-        className="text-gray-600 hover:text-gray-900 text-left"
-        to={post_id.toString()}
-      >
-        <div className="bg-gray-50 p-5 m-3 rounded-md border border-2 hover:border-gray-300 transition transition-duration-150">
-          <div className="font-bold text-xl">{p_query}</div>
-          <div>UPVOTES: {p_upvotes}</div>
-          <div>CATEGORY: {category == undefined ? "NONE" : category}</div>
+      <div className="flex flex-row">
+        <div className="flex flex-col items-center w-8 pt-5">
+          <ArrowUpIcon
+            className={`${
+              isUpvote ? "text-blue-500 bg-blue-200" : "text-black bg-gray-200"
+            } w-full p-1 transition transition-duration-150 hover:text-blue-500 hover:cursor-pointer rounded-lg`}
+            onClick={handleUpvote}
+          />
+          <span className="mt-1 select-none">{upvote}</span>
         </div>
-      </Link>
+        <Link
+          className="w-full text-gray-600 hover:text-gray-900 text-left select-none max-h-1/2"
+          to={
+            pathname == "/forum"
+              ? post_id.toString()
+              : `../forum/${post_id.toString()}`
+          }
+        >
+          <div
+            className={`p-5 m-3 rounded-lg border border-2 hover:border-gray-300 transition transition-duration-150 ${
+              pathname == "/forum" ? "bg-gray-50" : "bg-white"
+            }`}
+          >
+            <div className="text-sm text-gray-500">
+              Posted by{" "}
+              <span className="font-semibold text-gray-600">{username}</span>
+              {category_name == undefined ? "" : ` in ${category_name}`}
+            </div>
+            <div className="font-bold text-xl">{p_title}</div>
+            <div className="mb-1">
+              {p_query
+                ? `${
+                    p_query.length > 200
+                      ? `${p_query.substring(0, 200)}...`
+                      : p_query
+                  }`
+                : p_query}
+            </div>
+            <div className="text-sm text-gray-400">
+              {new Date(p_time_posted).toUTCString()}
+            </div>
+          </div>
+        </Link>
+      </div>
     </>
   );
 };
