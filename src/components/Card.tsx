@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { postData } from "../definitions";
 import { ArrowUpIcon } from "@heroicons/react/20/solid";
 import axios from "axios";
@@ -18,16 +18,23 @@ const Card = ({
   const [upvote, setUpvote] = useState(p_upvotes);
 
   const user_id = localStorage.getItem("user_id");
+  const location = useLocation();
+  const { hash, pathname, search } = location;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const isUpvote = async () => {
-      const response = await axios.put("http://localhost:3000/api/isUpvote", {
-        user_id: user_id,
-        post_id: post_id,
-      });
-      const user = response.data;
-      if (user[0]) {
-        setIsUpvote(true);
+      try {
+        const response = await axios.put("http://localhost:3000/api/isUpvote", {
+          user_id: user_id,
+          post_id: post_id,
+        });
+        const user = response.data;
+        if (user[0]) {
+          setIsUpvote(true);
+        }
+      } catch (error) {
+        navigate("/login");
       }
     };
     isUpvote();
@@ -36,16 +43,21 @@ const Card = ({
   const handleUpvote = () => {
     setIsUpvote(!isUpvote);
     const getUpvote = async () => {
-      const response = await axios.put(
-        `http://localhost:3000/api/${post_id}/${
-          isUpvote ? "downvote" : "upvote"
-        }`,
-        { user_id: user_id }
-      );
-      setUpvote(response.data[0].p_upvotes);
+      try {
+        const response = await axios.put(
+          `http://localhost:3000/api/${post_id}/${
+            isUpvote ? "downvote" : "upvote"
+          }`,
+          { user_id: user_id }
+        );
+        setUpvote(response.data[0].p_upvotes);
+      } catch (error) {
+        navigate("/login");
+      }
     };
     getUpvote();
   };
+
   return (
     <>
       <div className="flex flex-row">
@@ -60,9 +72,17 @@ const Card = ({
         </div>
         <Link
           className="w-full text-gray-600 hover:text-gray-900 text-left select-none max-h-1/2"
-          to={post_id.toString()}
+          to={
+            pathname == "/forum"
+              ? post_id.toString()
+              : `../forum/${post_id.toString()}`
+          }
         >
-          <div className="bg-gray-50 p-5 m-3 rounded-lg border border-2 hover:border-gray-300 transition transition-duration-150">
+          <div
+            className={`p-5 m-3 rounded-lg border border-2 hover:border-gray-300 transition transition-duration-150 ${
+              pathname == "/forum" ? "bg-gray-50" : "bg-white"
+            }`}
+          >
             <div className="text-sm text-gray-500">
               Posted by{" "}
               <span className="font-semibold text-gray-600">{username}</span>

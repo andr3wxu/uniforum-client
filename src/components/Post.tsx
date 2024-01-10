@@ -27,21 +27,29 @@ const Post = () => {
 
   useEffect(() => {
     const getPostData = async () => {
-      const response = await axios.get(
-        `http://localhost:3000/api/${postId.postId}`
-      );
-      setPost(response.data);
-      setPostUpvote(response.data.p_upvotes);
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/${postId.postId}`
+        );
+        setPost(response.data);
+        setPostUpvote(response.data.p_upvotes);
+      } catch (error) {
+        navigate("/login");
+      }
     };
     getPostData();
     const isUpvote = async () => {
-      const response = await axios.put("http://localhost:3000/api/isUpvote", {
-        user_id: user_id,
-        post_id: postId.postId,
-      });
-      const user = response.data;
-      if (user[0]) {
-        setIsPostUpvote(true);
+      try {
+        const response = await axios.put("http://localhost:3000/api/isUpvote", {
+          user_id: user_id,
+          post_id: postId.postId,
+        });
+        const user = response.data;
+        if (user[0]) {
+          setIsPostUpvote(true);
+        }
+      } catch (error) {
+        navigate("/login");
       }
     };
     isUpvote();
@@ -50,11 +58,15 @@ const Post = () => {
 
   useEffect(() => {
     const getCommentData = async () => {
-      const response = await axios.get(
-        `http://localhost:3000/api/getCommentDataByNew/${postId.postId}`
-      );
-      setCommentData(response.data);
-      setCommentDataFetched(true);
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/getCommentDataByNew/${postId.postId}`
+        );
+        setCommentData(response.data);
+        setCommentDataFetched(true);
+      } catch (error) {
+        navigate("/login");
+      }
     };
     getCommentData();
   }, [postId, postUpdate]);
@@ -62,13 +74,17 @@ const Post = () => {
   const handlePostUpvote = () => {
     setIsPostUpvote(!isPostUpvote);
     const getUpvote = async () => {
-      const response = await axios.put(
-        `http://localhost:3000/api/${post.post_id}/${
-          isPostUpvote ? "downvote" : "upvote"
-        }`,
-        { user_id: user_id }
-      );
-      setPostUpvote(response.data[0].p_upvotes);
+      try {
+        const response = await axios.put(
+          `http://localhost:3000/api/${post.post_id}/${
+            isPostUpvote ? "downvote" : "upvote"
+          }`,
+          { user_id: user_id }
+        );
+        setPostUpvote(response.data[0].p_upvotes);
+      } catch (error) {
+        navigate("/login");
+      }
     };
     getUpvote();
   };

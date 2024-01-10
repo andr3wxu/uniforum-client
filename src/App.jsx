@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import './App.css'
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Home from './pages/Home';
@@ -18,7 +17,7 @@ function App() {
         <Routes>
           <Route index element={<Home/>} />
           <Route path="login" element={<Login/>} />
-          <Route path="register" element={<Register />} />
+          <Route path="sign-up" element={<Register />} />
           <Route path="forum" element={<Forum/>} />
           <Route path="forum/:postId" element={<Post/>} />
           <Route path="create" element={<Create />} />
@@ -33,9 +32,5 @@ function App() {
 
 export default App
 
-// register page
-  // jwt token
 // readme
-// profile posts
-// add authenticate tokens
 // clean up code

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Button from "./button";
 import Navbar from "./Navbar";
 import { Link, useNavigate } from "react-router-dom";
@@ -51,6 +51,17 @@ const CreateForm = () => {
       navigate("/forbidden");
     }
   };
+
+  useEffect(() => {
+    const authCheck = async () => {
+      try {
+        await axios.get(`http://localhost:3000/api/userInfo/${user}`);
+      } catch (error) {
+        navigate("/login");
+      }
+    };
+    authCheck();
+  });
 
   return (
     <div>

@@ -14,7 +14,7 @@ const Home = () => {
         className="text-blue-500 hover:text-blue-600 font-semibold"
         to={"/login"}
       >
-        Login or register to get started!
+        Login or sign up to get started!
       </Link>
     </div>
   );
