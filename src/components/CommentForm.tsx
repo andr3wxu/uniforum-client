@@ -1,9 +1,8 @@
 import React from "react";
 import Button from "./button";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
-import { useContext } from "react";
 import { UpdatePost } from "./Post";
 
 const CommentForm = () => {

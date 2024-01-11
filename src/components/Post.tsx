@@ -90,6 +90,7 @@ const Post = () => {
   };
 
   const handleUpdate = () => {
+    console.log(postUpdate);
     setPostUpdate((postUpdate) => postUpdate + 1);
   };
 
